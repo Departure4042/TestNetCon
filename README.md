@@ -11,4 +11,7 @@ Written in my 'spare' time, poorly. Use where ever and how ever you want. Don't 
 
 
 Extract .zip, run TestNetCon.exe
-https://github.com/Departure4042/TestNetCon/files/12029980/TestNetCon.zip
+Required .net core 7. It will prompt to download if not installed already.
+
+
+https://github.com/Departure4042/TestNetCon/releases
