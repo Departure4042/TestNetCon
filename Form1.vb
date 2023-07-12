@@ -136,7 +136,7 @@ Public Class Form1
 
 
     Private Async Sub ButtonPing_Click(sender As Object, e As EventArgs) Handles ButtonPing.Click
-        ListBoxResults.Items.Clear()
+        RichTextBoxResults.Clear()
         ButtonPing.Enabled = False
         Await PingDomainsAsync(TextBoxDomains.Text.Split(New String() {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries))
         ButtonPing.Enabled = True
@@ -148,18 +148,18 @@ Public Class Form1
                 Dim ping As New Ping()
                 Dim reply As PingReply = Await ping.SendPingAsync(domain)
                 If reply.Status = IPStatus.Success Then
-                    ListBoxResults.Items.Add($"{domain} is reachable. Roundtrip time: {reply.RoundtripTime} ms")
+                    RichTextBoxResults.AppendText($"{domain} is reachable. Roundtrip time: {reply.RoundtripTime} ms" + Environment.NewLine)
                 Else
-                    ListBoxResults.Items.Add($"{domain} is not reachable. Status: {reply.Status}")
+                    RichTextBoxResults.AppendText($"{domain} is not reachable. Status: {reply.Status}" + Environment.NewLine)
                 End If
             Catch ex As Exception
-                ListBoxResults.Items.Add($"Error pinging {domain}: {ex.Message}")
+                RichTextBoxResults.AppendText($"Error pinging {domain}: {ex.Message}" + Environment.NewLine)
             End Try
         Next
     End Function
 
     Private Async Sub ButtonHTTPandHTTPS_Click(sender As Object, e As EventArgs) Handles ButtonHTTPandHTTPS.Click
-        ListBoxResults.Items.Clear()
+        RichTextBoxResults.Clear()
         ButtonHTTPandHTTPS.Enabled = False
         Await CheckHttpAndHttpsAsync(TextBoxDomains.Text.Split(New String() {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries))
         ButtonHTTPandHTTPS.Enabled = True
@@ -171,34 +171,36 @@ Public Class Form1
                 Try
                     Dim httpResponse As HttpResponseMessage = Await httpClient.GetAsync("http://" + domain)
                     If httpResponse.IsSuccessStatusCode AndAlso httpResponse.Content.Headers.ContentLength.GetValueOrDefault() > 0 Then
-                        ListBoxResults.Items.Add($"Connected to http://{domain} successfully, status code: {httpResponse.StatusCode}, content length: {httpResponse.Content.Headers.ContentLength}")
+                        RichTextBoxResults.AppendText($"Connected to http://{domain} successfully, status code: {httpResponse.StatusCode}, content length: {httpResponse.Content.Headers.ContentLength}" + Environment.NewLine)
                     Else
-                        ListBoxResults.Items.Add($"Connection to http://{domain} was not fully successful, status code: {httpResponse.StatusCode}, content length: {httpResponse.Content.Headers.ContentLength}")
+                        RichTextBoxResults.AppendText($"Connection to http://{domain} was not fully successful, status code: {httpResponse.StatusCode}, content length: {httpResponse.Content.Headers.ContentLength}" + Environment.NewLine)
                     End If
                 Catch ex As Exception
-                    ListBoxResults.Items.Add($"Error connecting to http://{domain}: {ex.Message}")
+                    RichTextBoxResults.AppendText($"Error connecting to http://{domain}: {ex.Message}" + Environment.NewLine)
                 End Try
 
                 Try
                     Dim httpsResponse As HttpResponseMessage = Await httpClient.GetAsync("https://" + domain)
                     If httpsResponse.IsSuccessStatusCode AndAlso httpsResponse.Content.Headers.ContentLength.GetValueOrDefault() > 0 Then
-                        ListBoxResults.Items.Add($"Connected to https://{domain} successfully, status code: {httpsResponse.StatusCode}, content length: {httpsResponse.Content.Headers.ContentLength}")
+                        RichTextBoxResults.AppendText($"Connected to https://{domain} successfully, status code: {httpsResponse.StatusCode}, content length: {httpsResponse.Content.Headers.ContentLength}" + Environment.NewLine)
                     Else
-                        ListBoxResults.Items.Add($"Connection to https://{domain} was not fully successful, status code: {httpsResponse.StatusCode}, content length: {httpsResponse.Content.Headers.ContentLength}")
+                        RichTextBoxResults.AppendText($"Connection to https://{domain} was not fully successful, status code: {httpsResponse.StatusCode}, content length: {httpsResponse.Content.Headers.ContentLength}" + Environment.NewLine)
                     End If
                 Catch ex As Exception
-                    ListBoxResults.Items.Add($"Error connecting to https://{domain}: {ex.Message}")
+                    RichTextBoxResults.AppendText($"Error connecting to https://{domain}: {ex.Message}" + Environment.NewLine)
                 End Try
             Next
         End Using
     End Function
 
+
     Private Async Sub ButtonCheckCerts_Click(sender As Object, e As EventArgs) Handles ButtonCheckCerts.Click
-        ListBoxResults.Items.Clear()
+        RichTextBoxResults.Clear()
         ButtonCheckCerts.Enabled = False
         Await CheckCertsAsync(TextBoxDomains.Text.Split(New String() {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries))
         ButtonCheckCerts.Enabled = True
     End Sub
+
 
     Private Async Function CheckCertsAsync(domains As String()) As Task
         Using handler As New HttpClientHandler()
@@ -208,29 +210,30 @@ Public Class Form1
                     Try
                         Dim httpsResponse As HttpResponseMessage = Await httpClient.GetAsync("https://" + domain)
                         If httpsResponse.IsSuccessStatusCode Then
-                            ListBoxResults.Items.Add($"SSL certificate for https://{domain} is valid")
+                            RichTextBoxResults.AppendText($"SSL certificate for https://{domain} is valid" + Environment.NewLine)
                         Else
-                            ListBoxResults.Items.Add($"Failed to validate SSL certificate for https://{domain}: HTTP status code {httpsResponse.StatusCode}")
+                            RichTextBoxResults.AppendText($"Failed to validate SSL certificate for https://{domain}: HTTP status code {httpsResponse.StatusCode}" + Environment.NewLine)
                         End If
                     Catch ex As Exception
-                        ListBoxResults.Items.Add($"Error validating SSL certificate for https://{domain}: {ex.Message}")
+                        RichTextBoxResults.AppendText($"Error validating SSL certificate for https://{domain}: {ex.Message}" + Environment.NewLine)
                     End Try
                 Next
             End Using
         End Using
     End Function
 
+
     Private Function ValidateServerCertificate(sender As Object, certificate As X509Certificate, chain As X509Chain, sslPolicyErrors As SslPolicyErrors) As Boolean
         If sslPolicyErrors = SslPolicyErrors.None Then
             Return True
         Else
-            ListBoxResults.Items.Add($"SSL certificate error: {sslPolicyErrors}")
+            RichTextBoxResults.AppendText($"SSL certificate error: {sslPolicyErrors}")
             Return False
         End If
     End Function
 
     Private Async Sub ButtonDNSLocal_Click(sender As Object, e As EventArgs) Handles ButtonDNSLocal.Click
-        ListBoxResults.Items.Clear()
+        RichTextBoxResults.Clear()
         ButtonDNSLocal.Enabled = False
         Await CheckDNSLocalAsync(TextBoxDomains.Text.Split(New String() {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries))
         ButtonDNSLocal.Enabled = True
@@ -241,18 +244,18 @@ Public Class Form1
             Try
                 Dim hostEntry As IPHostEntry = Await Dns.GetHostEntryAsync(domain)
                 If hostEntry.AddressList.Length > 0 Then
-                    ListBoxResults.Items.Add($"Resolved domain {domain} to {hostEntry.AddressList(0)}")
+                    RichTextBoxResults.AppendText($"Resolved domain {domain} to {hostEntry.AddressList(0)}")
                 Else
-                    ListBoxResults.Items.Add($"Domain {domain} resolved, but no IP addresses were found")
+                    RichTextBoxResults.AppendText($"Domain {domain} resolved, but no IP addresses were found")
                 End If
             Catch ex As Exception
-                ListBoxResults.Items.Add($"Error resolving domain {domain}: {ex.Message}")
+                RichTextBoxResults.AppendText($"Error resolving domain {domain}: {ex.Message}")
             End Try
         Next
     End Function
 
     Private Async Sub ButtonDNS8888_Click(sender As Object, e As EventArgs) Handles ButtonDNS8888.Click
-        ListBoxResults.Items.Clear()
+        RichTextBoxResults.Clear()
         ButtonDNS8888.Enabled = False
         Await CheckDNS8888Async(TextBoxDomains.Text.Split(New String() {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries))
         ButtonDNS8888.Enabled = True
@@ -271,10 +274,10 @@ Public Class Form1
                 Using process As Process = Process.Start(startInfo)
                     Dim output As String = Await process.StandardOutput.ReadToEndAsync()
                     process.WaitForExit()
-                    ListBoxResults.Items.Add(output)
+                    RichTextBoxResults.AppendText(output)
                 End Using
             Catch ex As Exception
-                ListBoxResults.Items.Add($"Error running nslookup for domain {domain}: {ex.Message}")
+                RichTextBoxResults.AppendText($"Error running nslookup for domain {domain}: {ex.Message}")
             End Try
         Next
     End Function
@@ -287,7 +290,7 @@ Public Class Form1
         ButtonRunAll.Text = "Running, wait."
 
         ' Clear the list box
-        ListBoxResults.Items.Clear()
+        RichTextBoxResults.Clear()
 
         ' Run the ping tests
         Await PingDomainsAsync(domains)
@@ -357,10 +360,9 @@ Public Class Form1
         html.Append("<div class='system-info'>").Append(LabelSysInfo.Text.Replace(Environment.NewLine, "<br/>")).Append("</div></div>")
 
         ' Add test results
-        For Each item In ListBoxResults.Items
-            Dim itemString = item.ToString()
-            Dim cssClass As String = If(itemString.ToLower().Contains("error"), "failure", "success")
-            html.Append("<div class='box'><div class='test ").Append(cssClass).Append("'>").Append(itemString.Replace(Environment.NewLine, "<br/>")).Append("</div></div>")
+        For Each item As String In RichTextBoxResults.Lines
+            Dim cssClass As String = If(item.ToLower().Contains("error"), "failure", "success")
+            html.Append("<div class='box'><div class='test ").Append(cssClass).Append("'>").Append(item.Replace(Environment.NewLine, "<br/>")).Append("</div></div>")
         Next
 
         ' Add list of domains tested
@@ -411,9 +413,9 @@ Public Class Form1
             Dim canConnect As Boolean = Await CheckPortConnection(domain, port)
 
             If canConnect Then
-                ListBoxResults.Items.Add($"Successfully connected to {domain} on port {port}.")
+                RichTextBoxResults.AppendText($"Successfully connected to {domain} on port {port}." + Environment.NewLine)
             Else
-                ListBoxResults.Items.Add($"Failed to connect to {domain} on port {port}.")
+                RichTextBoxResults.AppendText($"Failed to connect to {domain} on port {port}." + Environment.NewLine)
             End If
         Next
     End Sub
@@ -438,8 +440,8 @@ Public Class Form1
 
     Private Async Sub ButtonTraceroute_Click(sender As Object, e As EventArgs) Handles ButtonTraceroute.Click
         Try
-            ' Clear the results list box
-            ListBoxResults.Items.Clear()
+
+            RichTextBoxResults.Clear()
 
             ' Run traceroute to google.com
             Using process As New Process()
@@ -452,7 +454,7 @@ Public Class Form1
 
                 While Not process.StandardOutput.EndOfStream
                     Dim line = Await process.StandardOutput.ReadLineAsync()
-                    ListBoxResults.Items.Add(line)
+                    RichTextBoxResults.AppendText(line)
                 End While
 
                 process.WaitForExit()
@@ -465,7 +467,7 @@ Public Class Form1
     Private Sub ButtonNetEventLog_Click(sender As Object, e As EventArgs) Handles ButtonNetEventLog.Click
         Try
             ' Clear the results list box
-            ListBoxResults.Items.Clear()
+            RichTextBoxResults.Clear()
 
             Dim logName As String = "System"
             Dim logMachineName As String = "." ' Local machine
@@ -480,7 +482,7 @@ Public Class Form1
             For Each entry As EventLogEntry In myEventLog.Entries
                 ' Check if the entry is a warning, error, or failure audit and that it's from one of the specified sources
                 If ((entry.EntryType = EventLogEntryType.Warning) OrElse (entry.EntryType = EventLogEntryType.Error) OrElse (entry.EntryType = EventLogEntryType.FailureAudit)) AndAlso (networkEventSources.Contains(entry.Source)) Then
-                    ListBoxResults.Items.Add($"Time: {entry.TimeGenerated}, Source: {entry.Source}, Message: {entry.Message}")
+                    RichTextBoxResults.AppendText($"Time: {entry.TimeGenerated}, Source: {entry.Source}, Message: {entry.Message}" + Environment.NewLine)
                 End If
             Next
         Catch ex As Exception

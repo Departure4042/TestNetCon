@@ -22,7 +22,6 @@ Partial Class Form1
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        ListBoxResults = New ListBox()
         ButtonPing = New Button()
         Label1 = New Label()
         ButtonImportCSV = New Button()
@@ -43,20 +42,9 @@ Partial Class Form1
         ButtonOpenAll = New Button()
         ButtonTraceroute = New Button()
         ButtonNetEventLog = New Button()
+        RichTextBoxResults = New RichTextBox()
         GroupBoxSysInfo.SuspendLayout()
         SuspendLayout()
-        ' 
-        ' ListBoxResults
-        ' 
-        ListBoxResults.FormattingEnabled = True
-        ListBoxResults.HorizontalScrollbar = True
-        ListBoxResults.ItemHeight = 15
-        ListBoxResults.Location = New Point(12, 332)
-        ListBoxResults.Name = "ListBoxResults"
-        ListBoxResults.ScrollAlwaysVisible = True
-        ListBoxResults.SelectionMode = SelectionMode.MultiSimple
-        ListBoxResults.Size = New Size(776, 184)
-        ListBoxResults.TabIndex = 0
         ' 
         ' ButtonPing
         ' 
@@ -238,12 +226,21 @@ Partial Class Form1
         ButtonNetEventLog.Text = "Network Error Events"
         ButtonNetEventLog.UseVisualStyleBackColor = True
         ' 
+        ' RichTextBoxResults
+        ' 
+        RichTextBoxResults.Location = New Point(12, 329)
+        RichTextBoxResults.Name = "RichTextBoxResults"
+        RichTextBoxResults.Size = New Size(776, 184)
+        RichTextBoxResults.TabIndex = 21
+        RichTextBoxResults.Text = ""
+        ' 
         ' Form1
         ' 
         AcceptButton = ButtonRunAll
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(800, 570)
+        ClientSize = New Size(794, 570)
+        Controls.Add(RichTextBoxResults)
         Controls.Add(ButtonNetEventLog)
         Controls.Add(ButtonTraceroute)
         Controls.Add(ButtonOpenAll)
@@ -263,15 +260,12 @@ Partial Class Form1
         Controls.Add(ButtonImportCSV)
         Controls.Add(Label1)
         Controls.Add(ButtonPing)
-        Controls.Add(ListBoxResults)
         Name = "Form1"
         Text = "TestNetCon"
         GroupBoxSysInfo.ResumeLayout(False)
         ResumeLayout(False)
         PerformLayout()
     End Sub
-
-    Friend WithEvents ListBoxResults As ListBox
     Friend WithEvents ButtonPing As Button
     Friend WithEvents Label1 As Label
     Friend WithEvents ButtonImportCSV As Button
@@ -292,4 +286,5 @@ Partial Class Form1
     Friend WithEvents ButtonOpenAll As Button
     Friend WithEvents ButtonTraceroute As Button
     Friend WithEvents ButtonNetEventLog As Button
+    Friend WithEvents RichTextBoxResults As RichTextBox
 End Class
