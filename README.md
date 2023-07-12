@@ -8,3 +8,7 @@ Written in my 'spare' time, poorly. Use where ever and how ever you want. Don't 
 
 
 ![image](https://github.com/Departure4042/TestNetCon/assets/122467663/003d2514-8ec3-4663-b22c-be12f393ac63)
+
+
+Extract .zip, run TestNetCon.exe
+https://github.com/Departure4042/TestNetCon/files/12029980/TestNetCon.zip
